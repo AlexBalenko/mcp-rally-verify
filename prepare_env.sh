@@ -2,8 +2,8 @@
 
 function prepare {
     cp /root/openrc /home
-    cp ./run_debug /home
-    cp ./install_tempest.sh /home
+    cp debug /home
+    cp install_tempest.sh /home
     V2_FIX=$(cat /home/openrc |grep v2.0| wc -l)
     if [ ${V2_FIX} == '0' ]; then
         sed -i 's|:5000|:5000/v2.0|g' /home/openrc
