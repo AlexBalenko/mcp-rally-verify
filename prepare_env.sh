@@ -38,18 +38,6 @@ function configure_tempest {
         storage_protocol="ceph"
     fi
 
-    if [ $(grep  "\[orchestration\]" $tconf) ]; then
-        N=$(grep -n "\[orchestration\]" $tconf | cut -d':' -f1)
-        N=$(($N+1))
-        sed -e $N"s/^/max_json_body_size = 10880000\n/" -i $tconf
-        sed -e $N"s/^/max_resources_per_stack = 20000\n/" -i $tconf
-        sed -e $N"s/^/max_template_size = 5440000\n/" -i $tconf
-    fi
-    
-    N=$(grep -n "\[compute\]" $tconf | cut -d':' -f1)
-    N=$(($N+1))
-    sed -e $N"s/^/volume_device_name = vdc\n/" -i $tconf
-    
     echo "[volume]" >> $tconf
     echo "build_timeout = 300" >> $tconf
     echo "storage_protocol = $storage_protocol" >> $tconf
