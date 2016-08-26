@@ -2,8 +2,8 @@
 
 function prepare {
     cp /root/openrc /home
-    cp ./run_debug.sh /home
-    cp ./install_tempest.sh /home
+    cp debug /home
+    cp install_tempest.sh /home
     V2_FIX=$(cat /home/openrc |grep v2.0| wc -l)
     if [ ${V2_FIX} == '0' ]; then
         sed -i 's|:5000|:5000/v2.0|g' /home/openrc
@@ -50,6 +50,11 @@ function configure_tempest {
     sed -e $c_n"s/^/min_microversion = 2.1\n/" -i $tconf
     sed -e $c_n"s/^/max_microversion = latest\n/" -i $tconf
     sed -e $c_n"s/^/min_compute_nodes = 2\n/" -i $tconf
+
+    cfe_n=$(grep -n "\[compute-feature-enabled\]" $file | cut -d':' -f1)
+    cfe_n=$(($cfe_n+1))
+    sed -e $cfe_n"s/^/nova_cert = True\n/" -i  $tconf
+    sed -e $cfe_n"s/^/personality = True\n/" -i  $tconf
     
     sed -i "s|live_migration = False|live_migration = True|g" $tconf
     sed -i "s|attach_encrypted_volume = False|attach_encrypted_volume = True|g" $tconf 
