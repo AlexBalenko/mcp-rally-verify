@@ -51,7 +51,7 @@ function configure_tempest {
     sed -e $c_n"s/^/max_microversion = latest\n/" -i $tconf
     sed -e $c_n"s/^/min_compute_nodes = 2\n/" -i $tconf
 
-    cfe_n=$(grep -n "\[compute-feature-enabled\]" $file | cut -d':' -f1)
+    cfe_n=$(grep -n "\[compute-feature-enabled\]" $tconf | cut -d':' -f1)
     cfe_n=$(($cfe_n+1))
     sed -e $cfe_n"s/^/nova_cert = True\n/" -i  $tconf
     sed -e $cfe_n"s/^/personality = True\n/" -i  $tconf
