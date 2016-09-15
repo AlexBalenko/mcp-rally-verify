@@ -31,6 +31,7 @@ function configure_tempest {
     source /home/openrc
     docker exec -ti $docker_id bash -c "./install_tempest.sh"
     docker exec -ti $docker_id bash -c "apt-get install -y vim"
+    docker exec -ti $docker_id bash -c "apt-get install -y iputils-ping"
     tconf=$(find /home -name tempest.conf)
     storage_protocol="iSCSI"
     check_ceph=$(cat /etc/cinder/cinder.conf |grep RBD-backend | wc -l)
