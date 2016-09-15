@@ -63,7 +63,7 @@ function configure_tempest {
     echo "build_timeout = 300" >> $tconf
     echo "storage_protocol = $storage_protocol" >> $tconf
 
-    if [ $storage_protocol == 'ceph']; then
+    if [ $storage_protocol == 'ceph' ]; then
        sed -i "s|block_migration_for_live_migration = True|block_migration_for_live_migration = False|g" $tconf
     fi
     docker exec -ti $docker_id bash -c "rally verify showconfig"
