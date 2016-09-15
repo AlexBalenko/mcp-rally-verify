@@ -55,13 +55,16 @@ function configure_tempest {
     cfe_n=$(($cfe_n+1))
     sed -e $cfe_n"s/^/nova_cert = True\n/" -i  $tconf
     sed -e $cfe_n"s/^/personality = True\n/" -i  $tconf
+    sed -e $cfe_n"s/^/block_migration_for_live_migration = True\n/" -i $tconf
     
     sed -i "s|live_migration = False|live_migration = True|g" $tconf
-    sed -i "s|attach_encrypted_volume = False|attach_encrypted_volume = True|g" $tconf 
     echo "[volume]" >> $tconf
     echo "build_timeout = 300" >> $tconf
     echo "storage_protocol = $storage_protocol" >> $tconf
-    
+
+    if [ $storage_protocol == 'ceph']; then
+       sed -i "s|block_migration_for_live_migration = True|block_migration_for_live_migration = False|g" $tconf
+    fi
     docker exec -ti $docker_id bash -c "rally verify showconfig"
     docker exec -ti $docker_id bash
 }
