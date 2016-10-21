@@ -4,9 +4,7 @@ Steps:
 
 1. Clone repo to controller
 2. Run prepare_env.sh
-
 Done
-
 You can run tempest tests:
 
 . openrc

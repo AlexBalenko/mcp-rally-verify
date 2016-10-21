@@ -4,6 +4,8 @@ function prepare {
     cp /root/openrc /home
     cp debug /home
     cp install_tempest.sh /home
+    cp	ceph lvm skip_ceph.list skip_lvm.list /home
+
     V2_FIX=$(cat /home/openrc |grep v2.0| wc -l)
     if [ ${V2_FIX} == '0' ]; then
         sed -i 's|:5000|:5000/v2.0|g' /home/openrc
@@ -28,45 +30,17 @@ function install_docker_and_run {
 }
 
 function configure_tempest {
-    source /home/openrc
-    docker exec -ti $docker_id bash -c "./install_tempest.sh"
-    docker exec -ti $docker_id bash -c "apt-get install -y vim"
-    docker exec -ti $docker_id bash -c "apt-get install -y iputils-ping"
-    tconf=$(find /home -name tempest.conf)
-    storage_protocol="iSCSI"
+    NOVA_FLTR=$(sed -n '/scheduler_default_filters=/p' /etc/nova/nova.conf | cut -f2 -d=)
     check_ceph=$(cat /etc/cinder/cinder.conf |grep '\[RBD-backend\]' | wc -l)
     if [ ${check_ceph} == '1' ]; then
         storage_protocol="ceph"
+    else
+        storage_protocol="lvm"
     fi
+    echo 'scheduler_available_filters = '$NOVA_FLTR >> $storage_protocol
 
-    o_n=$(grep -n "\[orchestration\]" $tconf | cut -d':' -f1)
-    o_n=$(($o_n+1))
-    sed -e $o_n"s/^/max_json_body_size = 10880000\n/" -i  $tconf
-    sed -e $o_n"s/^/max_resources_per_stack = 20000\n/" -i  $tconf
-    sed -e $o_n"s/^/max_template_size = 5440000\n/" -i  $tconf
-
-    c_n=$(grep -n "\[compute\]" $tconf | cut -d':' -f1)
-    c_n=$(($c_n+1))
-    sed -e $c_n"s/^/volume_device_name = vdc\n/" -i $tconf
-    sed -e $c_n"s/^/min_microversion = 2.1\n/" -i $tconf
-    sed -e $c_n"s/^/max_microversion = latest\n/" -i $tconf
-    sed -e $c_n"s/^/min_compute_nodes = 2\n/" -i $tconf
-
-    cfe_n=$(grep -n "\[compute-feature-enabled\]" $tconf | cut -d':' -f1)
-    cfe_n=$(($cfe_n+1))
-    sed -e $cfe_n"s/^/nova_cert = True\n/" -i  $tconf
-    sed -e $cfe_n"s/^/personality = True\n/" -i  $tconf
-    sed -e $cfe_n"s/^/block_migration_for_live_migration = True\n/" -i $tconf
-    
-    sed -i "s|live_migration = False|live_migration = True|g" $tconf
-    echo "[volume]" >> $tconf
-    echo "build_timeout = 300" >> $tconf
-    echo "storage_protocol = $storage_protocol" >> $tconf
-
-    if [ $storage_protocol == 'ceph' ]; then
-       sed -i "s|block_migration_for_live_migration = True|block_migration_for_live_migration = False|g" $tconf
-    fi
-    docker exec -ti $docker_id bash -c "rally verify showconfig"
+    docker exec -ti $docker_id bash -c "./install_tempest.sh"
+    docker exec -ti $docker_id bash -c "apt-get install -y vim"
     docker exec -ti $docker_id bash
 }
 
