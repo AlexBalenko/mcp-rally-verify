@@ -7,7 +7,7 @@ Steps:
 Done
 You can run tempest tests:
 
-. openrc
+. keystonerc
 
 rally verify start (all tests and scenario) or 
 rally verify start --regex <test>
