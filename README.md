@@ -4,7 +4,6 @@ Steps:
 
 1. Clone repo to controller
 2. Run prepare_env.sh
-3. Done
 4. You can run tempest tests:
 5. Source keystonerc
 6. rally verify start (for all tests and scenarios) or 
