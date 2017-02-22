@@ -4,6 +4,6 @@ tempest_dir="/home/rally/.rally/tempest/for-deployment-$id"
 source $tempest_dir/.venv/bin/activate
 export TEMPEST_CONFIG_DIR=$tempest_dir
 cd $tempest_dir
-source /home/rally/openrc
+source /home/rally/keystonerc
 pip install ipdb pep8 flake8
 apt-get install -y gdb python-dbg
