@@ -1,9 +1,12 @@
+====================
 MCP-RALLY-VERIFY
+====================
 
 Steps:
+---------
 
-1. Clone repo to controller
-2. Run prepare_env.sh
+* Clone repo to controller
+* Run prepare_env.sh
 4. You can run tempest tests:
 5. Source keystonerc
 6. rally verify start (for all tests and scenarios) or 
