@@ -14,10 +14,10 @@ function prepare {
     fi
     
     IS_TLS=$(source /root/keystonerc; openstack endpoint show identity 2>/dev/null | awk '/https/')
-    if [ "${IS_TLS}" ]; then
-        cp /var/lib/astute/haproxy/public_haproxy.pem /home 
-        echo "export OS_CACERT='/home/rally/public_haproxy.pem'" >> /home/openrc
-    fi
+    #if [ "${IS_TLS}" ]; then
+    #    cp /var/lib/astute/haproxy/public_haproxy.pem /home 
+    #    echo "export OS_CACERT='/home/rally/public_haproxy.pem'" >> /home/openrc
+    #fi
 }
 
 function install_docker_and_run {
